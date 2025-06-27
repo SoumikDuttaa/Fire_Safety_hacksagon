@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   intl: any  # Used for date formatting in dashboard
+  percent_indicator: ^4.2.2
+  fl_chart: ^0.63.0
 
 dev_dependencies:
   flutter_test:

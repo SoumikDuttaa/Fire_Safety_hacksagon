@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'tutorials_page.dart';
+import 'common_drill_page.dart';
+import 'field_drill_page.dart';
+import 'report_page.dart';
+import 'setting.dart';
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -11,7 +17,6 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final ScrollController _scrollController = ScrollController();
   late DateTime _selectedDate;
-  bool isLoading = false;
 
   @override
   void initState() {
@@ -42,8 +47,8 @@ class _DashboardPageState extends State<DashboardPage> {
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
+                children: const [
+                  Text(
                     'BlazeON',
                     style: TextStyle(
                       fontSize: 26,
@@ -51,7 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: Colors.black,
                     ),
                   ),
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.white,
                     child: Icon(Icons.person, color: Colors.black),
@@ -60,8 +65,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 20),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
@@ -79,10 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          formattedDate,
-                          style: const TextStyle(fontSize: 12),
-                        ),
+                        Text(formattedDate, style: const TextStyle(fontSize: 12)),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -105,32 +106,22 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: Row(
                               children: List.generate(daysInMonth, (index) {
                                 final int day = index + 1;
-                                final bool isSelected =
-                                    day == _selectedDate.day;
-
+                                final bool isSelected = day == _selectedDate.day;
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 6),
                                   child: GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        _selectedDate = DateTime(
-                                          now.year,
-                                          now.month,
-                                          day,
-                                        );
+                                        _selectedDate = DateTime(now.year, now.month, day);
                                       });
                                     },
                                     child: Container(
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.transparent,
+                                        color: isSelected ? Colors.white : Colors.transparent,
                                         border: Border.all(
-                                          color: isSelected
-                                              ? Colors.deepPurple
-                                              : Colors.grey,
+                                          color: isSelected ? Colors.deepPurple : Colors.grey,
                                           width: isSelected ? 3 : 1,
                                         ),
                                         shape: BoxShape.circle,
@@ -140,9 +131,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         '$day',
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontWeight: isSelected
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
+                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                                         ),
                                       ),
                                     ),
@@ -185,7 +174,9 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showDummyPage("ChatBot");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('ChatBot feature coming soon!')),
+          );
         },
         backgroundColor: const Color(0xFFD09A5B),
         child: const Icon(Icons.chat, size: 28),
@@ -202,7 +193,7 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.article, "Report"),
+              _buildNavItem(context, Icons.article, "Report"),
               const SizedBox(width: 16),
               Container(
                 decoration: BoxDecoration(
@@ -214,7 +205,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: const Icon(Icons.home, size: 32, color: Colors.orange),
               ),
               const SizedBox(width: 16),
-              _buildNavItem(Icons.settings, "Settings"),
+              _buildNavItem(context, Icons.settings, "Settings"),
             ],
           ),
         ),
@@ -224,7 +215,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildImageCard(String title, Color color) {
     return GestureDetector(
-      onTap: () => _showDummyPage(title),
+      onTap: () {
+        if (title == "TUTORIALS") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorialPage()));
+        } else if (title == "COMMON DRILL") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const CommonDrillPage()));
+        } else if (title == "FIELD DRILL") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const FieldDrillPage()));
+        }
+      },
       child: Container(
         height: 150,
         decoration: BoxDecoration(
@@ -245,9 +244,15 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label) {
     return InkWell(
-      onTap: () => _showDummyPage(label),
+      onTap: () {
+        if (label == "Report") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportPage(userId: "dummyUser")));
+        } else if (label == "Settings") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const Setting()));
+        }
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -255,20 +260,6 @@ class _DashboardPageState extends State<DashboardPage> {
           const SizedBox(height: 4),
           Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
         ],
-      ),
-    );
-  }
-
-  void _showDummyPage(String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: Text(title)),
-          body: Center(
-            child: Text("This is a placeholder for $title page."),
-          ),
-        ),
       ),
     );
   }
