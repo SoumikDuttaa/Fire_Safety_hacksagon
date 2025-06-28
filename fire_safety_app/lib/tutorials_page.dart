@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import removed: 'understanding_fire_behavior_page.dart';
+import 'understanding_fire_behavior.dart'; // ✅ Custom screen for first tutorial
 
 class TutorialPage extends StatefulWidget {
   const TutorialPage({super.key});
@@ -129,12 +129,17 @@ class _TutorialPageState extends State<TutorialPage> {
         subtitle: Text(status, style: const TextStyle(color: Colors.black54)),
         trailing: const Icon(Icons.arrow_forward, color: Colors.black),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TutorialDetailPage(title: title),
-            ),
-          );
+          if (title == 'Understanding Fire Behavior') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const UnderstandingFireBehaviorPage()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => TutorialDetailPage(title: title)),
+            );
+          }
         },
       ),
     );

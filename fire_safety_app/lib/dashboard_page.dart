@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -17,171 +19,55 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  final ScrollController _scrollController = ScrollController();
-  late DateTime _selectedDate;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDate = DateTime.now();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final formattedDate = DateFormat('d MMMM').format(_selectedDate);
-    final int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFDF0DC),
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    'BlazeON',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+          children: [
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  'BlazeON',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Colors.black),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Progress',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(formattedDate, style: const TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios, size: 18),
-                          onPressed: () {
-                            _scrollController.animateTo(
-                              _scrollController.offset - 100,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.ease,
-                            );
-                          },
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(daysInMonth, (index) {
-                                final int day = index + 1;
-                                final bool isSelected = day == _selectedDate.day;
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedDate = DateTime(now.year, now.month, day);
-                                      });
-                                    },
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: isSelected ? Colors.white : Colors.transparent,
-                                        border: Border.all(
-                                          color: isSelected ? Colors.deepPurple : Colors.grey,
-                                          width: isSelected ? 3 : 1,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        '$day',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, size: 18),
-                          onPressed: () {
-                            _scrollController.animateTo(
-                              _scrollController.offset + 100,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.ease,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, color: Colors.black),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildImageCard("TUTORIALS", "lib/assets/tutorials.jpg"),
-                    const SizedBox(height: 16),
-                    _buildImageCard("COMMON DRILL", "lib/assets/common_drill.jpg"),
-                    const SizedBox(height: 16),
-                    _buildImageCard("FIELD DRILL", "lib/assets/field_drill.jpg"),
-                  ],
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const FireSafetyCarousel(),
+            const SizedBox(height: 24),
+            _buildImageCard("TUTORIALS", "lib/assets/tutorials.jpg"),
+            const SizedBox(height: 16),
+            _buildImageCard("COMMON DRILL", "lib/assets/common_drill.jpg"),
+            const SizedBox(height: 16),
+            _buildImageCard("FIELD DRILL", "lib/assets/field_drill.jpg"),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ChatBot feature coming soon!')),
-          );
-        },
-        backgroundColor: const Color(0xFFD09A5B),
-        child: const Icon(Icons.chat, size: 28),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
+        child: FloatingActionButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('ChatBot feature coming soon!')),
+            );
+          },
+          backgroundColor: const Color(0xFFD09A5B),
+          child: const Icon(Icons.chat, size: 28),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -254,15 +140,9 @@ class _DashboardPageState extends State<DashboardPage> {
     return InkWell(
       onTap: () {
         if (label == "Report") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => ReportPage(userId: widget.userId)),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ReportPage(userId: widget.userId)));
         } else if (label == "Settings") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => Setting(userId: widget.userId)), // ✅ Fixed
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => Setting(userId: widget.userId)));
         }
       },
       child: Column(
@@ -273,6 +153,195 @@ class _DashboardPageState extends State<DashboardPage> {
           Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
         ],
       ),
+    );
+  }
+}
+
+class FireSafetyCarousel extends StatefulWidget {
+  const FireSafetyCarousel({super.key});
+
+  @override
+  State<FireSafetyCarousel> createState() => _FireSafetyCarouselState();
+}
+
+class _FireSafetyCarouselState extends State<FireSafetyCarousel> {
+  final PageController _pageController = PageController();
+  int _currentIndex = 0;
+  Timer? _autoSlideTimer;
+
+  final List<Map<String, dynamic>> carouselItems = [
+    {
+      'icon': Icons.calendar_month,
+      'title': "FIRE SAFETY WORKSHOP",
+      'subtitle': "Community Center, Springfield",
+      'date': "31 July",
+      'buttonText': "LEARN MORE",
+      'onPressed': () {
+        debugPrint("Learn More about the workshop");
+      },
+    },
+    {
+      'icon': Icons.tips_and_updates,
+      'title': "Install smoke alarms",
+      'subtitle': "in bedrooms, halls, and every level",
+      'date': "Tip of the Day",
+      'buttonText': null,
+      'onPressed': null,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoSlide();
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_pageController.hasClients) {
+        int nextPage = (_currentIndex + 1) % carouselItems.length;
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        setState(() {
+          _currentIndex = nextPage;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _autoSlideTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SizedBox(
+            height: 230,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: carouselItems.length,
+              onPageChanged: (index) => setState(() => _currentIndex = index),
+              itemBuilder: (context, index) {
+                final item = carouselItems[index];
+
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      'lib/assets/fire_background.png',
+                      fit: BoxFit.cover,
+                    ),
+                    Container(color: Colors.black.withOpacity(0.4)),
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 340),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.35),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  item['icon'] as IconData,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(height: 14),
+                                Text(
+                                  item['title'],
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  item['subtitle'],
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  item['date'],
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white54,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                if (item['buttonText'] != null) ...[
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed: item['onPressed'],
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.amber,
+                                      foregroundColor: Colors.black,
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      minimumSize: const Size(130, 38),
+                                    ),
+                                    child: Text(
+                                      item['buttonText'],
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(carouselItems.length, (index) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: _currentIndex == index ? 12 : 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: _currentIndex == index
+                    ? const Color.fromARGB(255, 160, 45, 45)
+                    : const Color.fromARGB(190, 255, 255, 255),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

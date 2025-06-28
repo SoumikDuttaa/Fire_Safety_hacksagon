@@ -19,6 +19,7 @@ dependencies:
   firebase_auth: ^4.17.4
   barcode_widget: ^2.0.3
   image_picker: ^1.1.2
+  youtube_player_flutter: ^8.1.0
 
 dev_dependencies:
   flutter_test:
