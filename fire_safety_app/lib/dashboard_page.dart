@@ -238,7 +238,7 @@ class _FireSafetyCarouselState extends State<FireSafetyCarousel> {
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
-                      'lib/assets/fire_background.png',
+                      'lib/assets/fire_background.jpg',
                       fit: BoxFit.cover,
                     ),
                     Container(color: Colors.black.withOpacity(0.4)),
