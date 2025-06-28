@@ -1,4 +1,3 @@
-// ✅ UNCHANGED IMPORTS & CLASS
 // ignore_for_file: unused_import
 
 import 'dart:convert';
@@ -11,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 
-// ✅ START OF ChatPage
 class ChatPage extends StatefulWidget {
   final String userId;
   const ChatPage({super.key, required this.userId});
@@ -59,9 +57,7 @@ use voice modulation human like voice. and also use simple words so that the nor
   }
 
   Future<void> fetchUserData() async {
-    final userDoc = FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.userId);
+    final userDoc = FirebaseFirestore.instance.collection('users').doc(widget.userId);
     try {
       final docSnapshot = await userDoc.get();
       if (!docSnapshot.exists) {
@@ -71,8 +67,7 @@ use voice modulation human like voice. and also use simple words so that the nor
       final data = (await userDoc.get()).data();
       final base64Image = data?['profile'] as String?;
       if (base64Image != null && base64Image.isNotEmpty) {
-        final cleanedBase64 =
-            base64Image.contains(',') ? base64Image.split(',').last : base64Image;
+        final cleanedBase64 = base64Image.contains(',') ? base64Image.split(',').last : base64Image;
         final decoded = base64Decode(cleanedBase64);
         setState(() {
           profileImageBytes = decoded;
@@ -144,9 +139,7 @@ use voice modulation human like voice. and also use simple words so that the nor
     if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
       return 'image/png';
     }
-    if (bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46) {
-      return 'image/gif';
-    }
+    if (bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46) return 'image/gif';
     return null;
   }
 
@@ -260,7 +253,13 @@ use voice modulation human like voice. and also use simple words so that the nor
       backgroundColor: const Color(0xFFFDF0DC),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text("🔥 Flamo - Chat Bot", style: TextStyle(color: Colors.black)),
+        title: Row(
+          children: [
+            Image.asset('lib/assets/flamoBot.png', width: 32, height: 32),
+            const SizedBox(width: 8),
+            const Text("Flamo - Chat Bot", style: TextStyle(color: Colors.black)),
+          ],
+        ),
         leading: const BackButton(color: Colors.black),
       ),
       body: isLoading
@@ -295,7 +294,10 @@ use voice modulation human like voice. and also use simple words so that the nor
                     padding: EdgeInsets.only(left: 20, top: 4, bottom: 10),
                     child: Row(
                       children: [
-                        CircleAvatar(radius: 16, backgroundImage: AssetImage('lib/assets/flamoBot.png')),
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundImage: AssetImage('lib/assets/flamoBot.png'),
+                        ),
                         SizedBox(width: 10),
                         TypingIndicator(),
                       ],
@@ -346,24 +348,20 @@ use voice modulation human like voice. and also use simple words so that the nor
   }
 }
 
-// ✅ The ChatMessage + TypingIndicator widgets are unchanged (already working)
-
-
-
 class ChatMessage extends StatelessWidget {
   final String text;
   final bool isUser;
   final DateTime timestamp;
-  final Uint8List? userImageBytes;
   final Uint8List? image;
+  final Uint8List? userImageBytes;
 
   const ChatMessage({
     super.key,
     required this.text,
     required this.isUser,
     required this.timestamp,
-    this.userImageBytes,
     this.image,
+    this.userImageBytes,
   });
 
   ChatMessage copyWith({Uint8List? userImageBytes}) {
@@ -378,141 +376,80 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubbleColor = isUser ? Colors.white : Colors.orange.shade100;
-    final formattedTime = DateFormat('hh:mm a').format(timestamp);
-    final avatar = Column(
-      children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundImage:
-              isUser
-                  ? (userImageBytes != null
-                      ? MemoryImage(userImageBytes!)
-                      : const AssetImage('lib/assets/user_avatar.png')
-                          as ImageProvider)
-                  : const AssetImage('lib/assets/flamoBot.png'),
-        ),
-        const SizedBox(height: 4),
-        Text(isUser ? 'You' : 'Flamo', style: const TextStyle(fontSize: 12)),
-      ],
-    );
+    final timeFormatted = DateFormat('hh:mm a').format(timestamp);
+    final avatar = isUser
+        ? (userImageBytes != null
+            ? CircleAvatar(backgroundImage: MemoryImage(userImageBytes!))
+            : const CircleAvatar(child: Icon(Icons.person)))
+        : const CircleAvatar(backgroundImage: AssetImage('lib/assets/flamoBot.png'));
 
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisAlignment:
-              isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isUser) avatar,
-            const SizedBox(width: 10),
-            Flexible(
-              child: Column(
-                crossAxisAlignment:
-                    isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: bubbleColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black12, blurRadius: 4),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment:
-                          isUser
-                              ? CrossAxisAlignment.end
-                              : CrossAxisAlignment.start,
-                      children: [
-                        if (image != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Image.memory(
-                              image!,
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        Container(
-                          constraints: const BoxConstraints(maxWidth: 180),
-                          padding: const EdgeInsets.only(top: 8),
-                          alignment: Alignment.centerLeft,
-                          child: MarkdownBody(data: text),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (!isUser) avatar,
+          if (!isUser) const SizedBox(width: 8),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isUser ? Colors.orange.shade100 : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (image != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Image.memory(image!, width: 200, fit: BoxFit.cover),
                         ),
-                      ],
-                    ),
+                      MarkdownBody(data: text),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    formattedTime,
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 4),
+                Text(timeFormatted, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+              ],
             ),
-            const SizedBox(width: 10),
-            if (isUser) avatar,
-          ],
-        ),
+          ),
+          if (isUser) const SizedBox(width: 8),
+          if (isUser) avatar,
+        ],
       ),
     );
   }
 }
 
-class TypingIndicator extends StatefulWidget {
+class TypingIndicator extends StatelessWidget {
   const TypingIndicator({super.key});
-  @override
-  State<TypingIndicator> createState() => _TypingIndicatorState();
-}
-
-class _TypingIndicatorState extends State<TypingIndicator>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late List<Animation<double>> _animations;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..repeat();
-    _animations = List.generate(3, (i) {
-      return Tween<double>(begin: 0, end: -6).animate(
-        CurvedAnimation(
-          parent: _controller,
-          curve: Interval(i * 0.2, 1.0, curve: Curves.easeInOut),
-        ),
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Widget _buildDot(Animation<double> anim) {
-    return AnimatedBuilder(
-      animation: anim,
-      builder:
-          (_, child) =>
-              Transform.translate(offset: Offset(0, anim.value), child: child),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3),
-        child: CircleAvatar(radius: 4, backgroundColor: Colors.grey),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: _animations.map(_buildDot).toList());
+    return Row(
+      children: [
+        _dot(),
+        const SizedBox(width: 4),
+        _dot(delay: 200),
+        const SizedBox(width: 4),
+        _dot(delay: 400),
+      ],
+    );
+  }
+
+  Widget _dot({int delay = 0}) {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.3, end: 1.0),
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeInOut,
+      builder: (_, value, child) => Opacity(opacity: value, child: child),
+      child: const CircleAvatar(radius: 3, backgroundColor: Colors.black),
+      onEnd: () {},
+    );
   }
 }
