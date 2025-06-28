@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'animated_fire_background.dart';
 import 'dashboard_page.dart';
+import 'admin_dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -42,15 +45,51 @@ class _LoginPageState extends State<LoginPage> {
       setState(() => _isLoading = true);
 
       try {
-        final UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
+        final userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
+        final user = userCredential.user;
+        if (user == null) throw Exception("User not found.");
+
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (!doc.exists) throw Exception("User record not found in database.");
+
+        final data = doc.data()!;
+        final role = data['role'];
+        final isActive = data['isactive'] == true;
+
+        if (!isActive) {
+          await FirebaseAuth.instance.signOut();
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("Account Inactive"),
+              content: const Text("Your account is deactivated."),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardPage()),
+          MaterialPageRoute(
+            builder: (_) => role == 'Manager'
+                ? FireSafetyAdminDashboard(userId: user.uid)
+                : DashboardPage(userId: user.uid),
+          ),
         );
       } on FirebaseAuthException catch (e) {
         String message = 'Login failed';
@@ -59,14 +98,20 @@ class _LoginPageState extends State<LoginPage> {
         } else if (e.code == 'wrong-password') {
           message = 'Wrong password provided.';
         }
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login error: $e")),
+        );
       } finally {
         setState(() => _isLoading = false);
       }
     }
   }
 
-  void _forgotpassword() {
+  void _forgotPassword() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Forgot Password screen not available')),
     );
@@ -83,9 +128,7 @@ class _LoginPageState extends State<LoginPage> {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               FocusScope.of(context).unfocus();
-              setState(() {
-                _obscurePassword = true;
-              });
+              setState(() => _obscurePassword = true);
             },
             child: Center(
               child: SingleChildScrollView(
@@ -107,7 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: "Email",
                           filled: true,
                           fillColor: Colors.white,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         validator: _validateEmail,
                       ),
@@ -119,14 +164,18 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: "Password",
                           filled: true,
                           fillColor: Colors.white,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_off : Icons.visibility,
                               color: Colors.grey,
                             ),
                             onPressed: () {
-                              setState(() => _obscurePassword = !_obscurePassword);
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
                             },
                           ),
                         ),
@@ -136,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: _forgotpassword,
+                          onPressed: _forgotPassword,
                           child: const Text(
                             "Forgot Password?",
                             style: TextStyle(fontSize: 12, color: Color.fromARGB(179, 0, 0, 0)),
@@ -161,11 +210,18 @@ class _LoginPageState extends State<LoginPage> {
                             shadowColor: Colors.transparent,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                              : const Text("LOGIN", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                )
+                              : const Text(
+                                  "LOGIN",
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ],

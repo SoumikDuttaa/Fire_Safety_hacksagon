@@ -3,7 +3,9 @@ import 'dashboard_page.dart';
 import 'report_page.dart';
 
 class Setting extends StatefulWidget {
-  const Setting({super.key}); // ❌ Removed userId
+  final String userId;
+
+  const Setting({super.key, required this.userId});
 
   @override
   _SettingState createState() => _SettingState();
@@ -31,12 +33,12 @@ class _SettingState extends State<Setting> {
     if (label == "Report") {
       Navigator.pushReplacement(
         context,
-        _createRoute(const ReportPage(userId: "dummyUser"), fromLeft: true),
+        _createRoute(ReportPage(userId: widget.userId), fromLeft: true),
       );
     } else if (label == "Home") {
       Navigator.pushReplacement(
         context,
-        _createRoute(const DashboardPage(), fromLeft: true),
+        _createRoute(DashboardPage(userId: widget.userId), fromLeft: true),
       );
     }
   }

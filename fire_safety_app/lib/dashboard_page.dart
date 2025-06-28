@@ -8,7 +8,9 @@ import 'report_page.dart';
 import 'setting.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final String userId;
+
+  const DashboardPage({super.key, required this.userId});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -214,48 +216,53 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildImageCard(String title, String imagePath) {
-  return GestureDetector(
-    onTap: () {
-      if (title == "TUTORIALS") {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorialPage()));
-      } else if (title == "COMMON DRILL") {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const CommonDrillPage()));
-      } else if (title == "FIELD DRILL") {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const FieldDrillPage()));
-      }
-    },
-    child: Container(
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+    return GestureDetector(
+      onTap: () {
+        if (title == "TUTORIALS") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorialPage()));
+        } else if (title == "COMMON DRILL") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const CommonDrillPage()));
+        } else if (title == "FIELD DRILL") {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const FieldDrillPage()));
+        }
+      },
+      child: Container(
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.2,
+          ),
         ),
       ),
-      alignment: Alignment.center,
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          letterSpacing: 1.2,
-        ),
-      ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildNavItem(BuildContext context, IconData icon, String label) {
     return InkWell(
       onTap: () {
         if (label == "Report") {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportPage(userId: "dummyUser")));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ReportPage(userId: widget.userId)),
+          );
         } else if (label == "Settings") {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const Setting()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => Setting(userId: widget.userId)), // ✅ Fixed
+          );
         }
       },
       child: Column(

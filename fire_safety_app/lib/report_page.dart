@@ -173,12 +173,12 @@ class ReportPage extends StatelessWidget {
         if (label == "Home") {
           Navigator.pushReplacement(
             context,
-            _createRoute(const DashboardPage()),
+            _createRoute(DashboardPage(userId: userId)),
           );
         } else if (label == "Settings") {
           Navigator.pushReplacement(
             context,
-            _createRoute(const Setting()), // ✅ FIXED
+            _createRoute(Setting(userId: userId)),
           );
         }
       },
