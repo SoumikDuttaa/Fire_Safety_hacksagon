@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'home_screen.dart';
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SplashScreen(),
-  ));
-}
+import 'home_screen.dart'; // Make sure this is your onboarding screen
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,29 +19,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    // Filling spray animation
-    _fillController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
-
-    // Fire fade animation
-    _fireFadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    // Fire size animation
-    _fireSizeController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
-
-    // Extinguisher pulsing animation
-    _extinguisherPulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
+    _fillController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _fireFadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _fireSizeController = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat(reverse: true);
+    _extinguisherPulseController = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat(reverse: true);
 
     _fillController.forward();
 
@@ -84,16 +58,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     return Stack(
       alignment: Alignment.centerRight,
       children: [
-        // Static triangle spray shape (background)
         ClipPath(
           clipper: SprayClipper(),
-          child: Container(
-            width: 100,
-            height: 50,
-            color: Colors.transparent,
-          ),
+          child: Container(width: 100, height: 50, color: Colors.transparent),
         ),
-        // Animated fill inside the triangle
         ClipPath(
           clipper: SprayClipper(),
           child: Align(
@@ -101,10 +69,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             child: FractionallySizedBox(
               widthFactor: _fillController.value,
               alignment: Alignment.centerRight,
-              child: Container(
-                height: 50,
-                color: Colors.white,
-              ),
+              child: Container(height: 50, color: Colors.white),
             ),
           ),
         ),
@@ -124,20 +89,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             const SizedBox(height: 16),
             RichText(
               text: const TextSpan(
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
                 children: <TextSpan>[
-                  TextSpan(
-                    text: 'Blaze',
-                    style: TextStyle(color: Color.fromARGB(255, 247, 255, 18)),
-                  ),
-                  TextSpan(
-                    text: 'ON',
-                    style: TextStyle(color: Color.fromARGB(255, 89, 39, 255)),
-                  ),
+                  TextSpan(text: 'Blaze', style: TextStyle(color: Color.fromARGB(255, 247, 255, 18))),
+                  TextSpan(text: 'ON', style: TextStyle(color: Color.fromARGB(255, 89, 39, 255))),
                 ],
               ),
             ),
@@ -145,7 +100,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 🔥 Fire animation
                 AnimatedBuilder(
                   animation: _fireSizeController,
                   builder: (context, child) {
@@ -160,7 +114,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   },
                 ),
                 const SizedBox(width: 4),
-                // 💨 Spray
                 SizedBox(
                   width: 100,
                   height: 50,
@@ -170,7 +123,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   ),
                 ),
                 const SizedBox(width: 4),
-                // 🧯 Extinguisher animation
                 AnimatedBuilder(
                   animation: _extinguisherPulseController,
                   builder: (context, child) {
@@ -194,9 +146,9 @@ class SprayClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.moveTo(size.width, size.height / 2); // Tip at extinguisher
-    path.lineTo(0, 0);                        // Top left
-    path.lineTo(0, size.height);              // Bottom left
+    path.moveTo(size.width, size.height / 2);
+    path.lineTo(0, 0);
+    path.lineTo(0, size.height);
     path.close();
     return path;
   }

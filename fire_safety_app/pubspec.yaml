@@ -2,7 +2,6 @@ name: fire_safety_app
 description: A new Flutter project.
 
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -12,9 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  intl: any  # Used for date formatting in dashboard
+  intl: any
   percent_indicator: ^4.2.2
   fl_chart: ^0.63.0
+  firebase_core: ^2.27.0
+  cloud_firestore: ^4.8.3
+  firebase_auth: ^4.17.4
+  barcode_widget: ^2.0.3
 
 dev_dependencies:
   flutter_test:
@@ -25,4 +28,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/assets/  # <-- This loads all your images, gifs inside lib/assets/
+    - lib/assets/

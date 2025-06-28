@@ -160,11 +160,11 @@ class _DashboardPageState extends State<DashboardPage> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildImageCard("TUTORIALS", Colors.deepOrange),
+                    _buildImageCard("TUTORIALS", "lib/assets/tutorials.jpg"),
                     const SizedBox(height: 16),
-                    _buildImageCard("COMMON DRILL", Colors.teal),
+                    _buildImageCard("COMMON DRILL", "lib/assets/common_drill.jpg"),
                     const SizedBox(height: 16),
-                    _buildImageCard("FIELD DRILL", Colors.indigo),
+                    _buildImageCard("FIELD DRILL", "lib/assets/field_drill.jpg"),
                   ],
                 ),
               ),
@@ -213,36 +213,41 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildImageCard(String title, Color color) {
-    return GestureDetector(
-      onTap: () {
-        if (title == "TUTORIALS") {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorialPage()));
-        } else if (title == "COMMON DRILL") {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const CommonDrillPage()));
-        } else if (title == "FIELD DRILL") {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const FieldDrillPage()));
-        }
-      },
-      child: Container(
-        height: 150,
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.2,
-          ),
+  Widget _buildImageCard(String title, String imagePath) {
+  return GestureDetector(
+    onTap: () {
+      if (title == "TUTORIALS") {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const TutorialPage()));
+      } else if (title == "COMMON DRILL") {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const CommonDrillPage()));
+      } else if (title == "FIELD DRILL") {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const FieldDrillPage()));
+      }
+    },
+    child: Container(
+      height: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
         ),
       ),
-    );
-  }
+      alignment: Alignment.center,
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          letterSpacing: 1.2,
+        ),
+      ),
+    ),
+  );
+}
+
 
   Widget _buildNavItem(BuildContext context, IconData icon, String label) {
     return InkWell(

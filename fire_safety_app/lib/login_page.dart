@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'animated_fire_background.dart';
-import 'dashboard_page.dart'; // ✅ make sure this file exists
+import 'dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -40,16 +41,28 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      await Future.delayed(const Duration(seconds: 2)); // simulate delay
+      try {
+        final UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DashboardPage(),
-        ),
-      );
-
-      setState(() => _isLoading = false);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
+      } on FirebaseAuthException catch (e) {
+        String message = 'Login failed';
+        if (e.code == 'user-not-found') {
+          message = 'No user found for that email.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Wrong password provided.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -82,14 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 50,
-                        backgroundColor: const Color(0xFFF2D7D9),
-                        child: const Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Color(0xFFB78387),
-                        ),
+                        backgroundColor: Color(0xFFF2D7D9),
+                        child: Icon(Icons.person, size: 50, color: Color(0xFFB78387)),
                       ),
                       const SizedBox(height: 30),
                       TextFormField(
@@ -98,9 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: "Email",
                           filled: true,
                           fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         validator: _validateEmail,
                       ),
@@ -112,20 +119,14 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: "Password",
                           filled: true,
                           fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
                               color: Colors.grey,
                             ),
                             onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
+                              setState(() => _obscurePassword = !_obscurePassword);
                             },
                           ),
                         ),
@@ -138,10 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: _forgotpassword,
                           child: const Text(
                             "Forgot Password?",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color.fromARGB(179, 0, 0, 0),
-                            ),
+                            style: TextStyle(fontSize: 12, color: Color.fromARGB(179, 0, 0, 0)),
                           ),
                         ),
                       ),
@@ -163,22 +161,11 @@ class _LoginPageState extends State<LoginPage> {
                             shadowColor: Colors.transparent,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                )
-                              : const Text(
-                                  "LOGIN",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                              : const Text("LOGIN", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
