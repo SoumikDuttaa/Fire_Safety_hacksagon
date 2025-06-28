@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
+import 'DashboardPage/dashboard_page.dart';
 import 'report_page.dart';
 
 class Setting extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SettingState extends State<Setting> {
     } else if (label == "Home") {
       Navigator.pushReplacement(
         context,
-        _createRoute(DashboardPage(userId: widget.userId), fromLeft: true),
+        _createRoute(UserDashboardPage(userId: widget.userId), fromLeft: true), // ✅ Fixed here
       );
     }
   }

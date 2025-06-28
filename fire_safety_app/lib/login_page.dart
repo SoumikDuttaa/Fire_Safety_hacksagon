@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'animated_fire_background.dart';
-import 'dashboard_page.dart';
+import 'DashboardPage/dashboard_page.dart'; // ✅ Keep import same
 import 'admin_dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(
             builder: (_) => role == 'Manager'
                 ? FireSafetyAdminDashboard(userId: user.uid)
-                : DashboardPage(userId: user.uid),
+                : UserDashboardPage(userId: user.uid), // ✅ Updated name
           ),
         );
       } on FirebaseAuthException catch (e) {

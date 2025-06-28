@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'dashboard_page.dart';
+import 'DashboardPage/dashboard_page.dart'; // KEEP IMPORT
 import 'setting.dart';
 
 class ReportPage extends StatelessWidget {
@@ -173,7 +173,7 @@ class ReportPage extends StatelessWidget {
         if (label == "Home") {
           Navigator.pushReplacement(
             context,
-            _createRoute(DashboardPage(userId: userId)),
+            _createRoute(UserDashboardPage(userId: userId)), // ✅ updated class name
           );
         } else if (label == "Settings") {
           Navigator.pushReplacement(
