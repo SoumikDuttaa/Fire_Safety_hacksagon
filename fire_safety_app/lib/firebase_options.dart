@@ -30,49 +30,50 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAZQgVvZsjN1Jnm4frvDHeXRsCkocv3uEY',
-    appId: '1:901854638965:web:8f5e93a2d83b1a41d6993c',
-    messagingSenderId: '901854638965',
-    projectId: 'firesafety-1e204',
-    authDomain: 'firesafety-1e204.firebaseapp.com',
-    storageBucket: 'firesafety-1e204.appspot.com', // ✅ fixed
-    measurementId: 'G-789W3NSHTW',
-  );
+static const FirebaseOptions web = FirebaseOptions(
+  apiKey: 'INSERT_YOUR_KEY',
+  appId: 'INSERT_YOUR_KEY',
+  messagingSenderId: 'INSERT_YOUR_KEY',
+  projectId: 'firesafety-1e204',
+  authDomain: 'firesafety-1e204.firebaseapp.com',
+  storageBucket: 'firesafety-1e204.appspot.com',
+  measurementId: 'INSERT_YOUR_KEY',
+);
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDdgVN8MTTZXchfRRPpPP3EonKyBfXpRFk',
-    appId: '1:901854638965:android:9039fe11df2aba59d6993c',
-    messagingSenderId: '901854638965',
-    projectId: 'firesafety-1e204',
-    storageBucket: 'firesafety-1e204.appspot.com', // ✅ fixed
-  );
+static const FirebaseOptions android = FirebaseOptions(
+  apiKey: 'INSERT_YOUR_KEY',
+  appId: 'INSERT_YOUR_KEY',
+  messagingSenderId: 'INSERT_YOUR_KEY',
+  projectId: 'firesafety-1e204',
+  storageBucket: 'firesafety-1e204.appspot.com',
+);
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA1_qfOscoosPo0FWHJ3KkcZfL5qWNFLfE',
-    appId: '1:901854638965:ios:7d2e7190eafd6b3ad6993c',
-    messagingSenderId: '901854638965',
-    projectId: 'firesafety-1e204',
-    storageBucket: 'firesafety-1e204.appspot.com', // ✅ fixed
-    iosBundleId: 'com.example.fireSafetyApp',
-  );
+static const FirebaseOptions ios = FirebaseOptions(
+  apiKey: 'INSERT_YOUR_KEY',
+  appId: 'INSERT_YOUR_KEY',
+  messagingSenderId: 'INSERT_YOUR_KEY',
+  projectId: 'firesafety-1e204',
+  storageBucket: 'firesafety-1e204.appspot.com',
+  iosBundleId: 'com.example.fireSafetyApp',
+);
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA1_qfOscoosPo0FWHJ3KkcZfL5qWNFLfE',
-    appId: '1:901854638965:ios:7d2e7190eafd6b3ad6993c',
-    messagingSenderId: '901854638965',
-    projectId: 'firesafety-1e204',
-    storageBucket: 'firesafety-1e204.appspot.com', // ✅ fixed
-    iosBundleId: 'com.example.fireSafetyApp',
-  );
+static const FirebaseOptions macos = FirebaseOptions(
+  apiKey: 'INSERT_YOUR_KEY',
+  appId: 'INSERT_YOUR_KEY',
+  messagingSenderId: 'INSERT_YOUR_KEY',
+  projectId: 'firesafety-1e204',
+  storageBucket: 'firesafety-1e204.appspot.com',
+  iosBundleId: 'com.example.fireSafetyApp',
+);
 
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAZQgVvZsjN1Jnm4frvDHeXRsCkocv3uEY',
-    appId: '1:901854638965:web:6ae5762b47a31095d6993c',
-    messagingSenderId: '901854638965',
-    projectId: 'firesafety-1e204',
-    authDomain: 'firesafety-1e204.firebaseapp.com',
-    storageBucket: 'firesafety-1e204.appspot.com', // ✅ fixed
-    measurementId: 'G-KCGNC7KFX6',
-  );
+static const FirebaseOptions windows = FirebaseOptions(
+  apiKey: 'INSERT_YOUR_KEY',
+  appId: 'INSERT_YOUR_KEY',
+  messagingSenderId: 'INSERT_YOUR_KEY',
+  projectId: 'firesafety-1e204',
+  authDomain: 'firesafety-1e204.firebaseapp.com',
+  storageBucket: 'firesafety-1e204.appspot.com',
+  measurementId: 'INSERT_YOUR_KEY',
+);
+
 }
